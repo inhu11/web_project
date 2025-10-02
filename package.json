@@ -3,9 +3,10 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
+    "dev": "npm-run-all -p dev:api dev:web",
     "dev:api": "cd backend && ../.venv/bin/python manage.py runserver",
-    "dev:web": "cd next && npm run dev",
-    "dev": "npm-run-all -p dev:api dev:web"
+    "dev:web": "cd frontend && npm run dev",
+    "setup": "npm install && cd frontend && npm install && cd ../backend && ../.venv/bin/pip install -r requirements.txt"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5"
