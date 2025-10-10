@@ -51,9 +51,14 @@ export default function Home() {
       <div className="px-6 py-10 w-full max-w-3xl">
         <div className="flex items-center justify-between mb-8">
           <div className="text-xl font-medium text-neutral-400">Home</div>
-          <Link href="/quiz" className="text-sm text-orange-500 hover:text-orange-400 transition">
-            Try Math Quiz →
-          </Link>
+          <div className="flex gap-4">
+            <Link href="/quiz" className="text-sm text-orange-500 hover:text-orange-400 transition">
+              Try Math Quiz →
+            </Link>
+            <Link href="/penalty" className="text-sm text-green-500 hover:text-green-400 transition">
+              Penalty Kick ⚽
+            </Link>
+          </div>
         </div>
         <div className="rounded-3xl bg-neutral-900 border border-neutral-800 shadow-2xl p-10 text-center">
           <div id="clock" className="text-7xl sm:text-8xl md:text-9xl font-semibold tracking-tight tabular-nums">--:--:--</div>

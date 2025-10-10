@@ -42,11 +42,9 @@ def check_answer(request):
         op = request.GET.get('op', '+').strip()
         user_answer = int(request.GET.get('answer', 0))
         
-        # Handle URL encoding issue: + in URL becomes space
         if op == ' ' or op == '':
             op = '+'
         
-        # Validate operation
         if op == '+':
             correct = a + b
         elif op == '-':
@@ -66,3 +64,29 @@ def check_answer(request):
         })
     except (ValueError, TypeError):
         return JsonResponse({'error': 'Invalid input'}, status=400)
+
+
+def penalty_kick(request):
+    choice = request.GET.get('choice', '').strip().lower()
+    
+    valid_choices = ['left', 'center', 'right', '왼쪽', '중앙', '오른쪽']
+    
+    if choice not in valid_choices:
+        return JsonResponse({'error': 'Invalid choice'}, status=400)
+    
+    # if choice in ['왼쪽', 'left']:
+    #     choice = 'left'
+    # elif choice in ['중앙', 'center']:
+    #     choice = 'center'
+    # elif choice in ['오른쪽', 'right']:
+    #     choice = 'right'
+    
+    # keeper_choice = 'center'
+    # goal = choice != keeper_choice
+    
+    return JsonResponse({
+        'player_choice': choice,
+        'keeper_choice': keeper_choice,
+        'goal': goal,
+        'message': '골인! 멋진 슛이에요!' if goal else '아! 골키퍼에게 막혔습니다!'
+    })
