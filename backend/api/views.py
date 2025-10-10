@@ -48,7 +48,7 @@ def check_answer(request):
             'correct': is_correct,
             'user_answer': user_answer,
             'correct_answer': correct,
-            'message': 'Great job!' if is_correct else f'Not quite! The answer is {correct}'
+            'message': '정답입니다!' if is_correct else f'아쉽네요! 정답은 {correct}입니다'
         })
     except:
-        return JsonResponse({'error': 'Invalid input'}, status=400)
+        return JsonResponse({'error': '잘못된 입력입니다'}, status=400)
