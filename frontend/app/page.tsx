@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function Home() {
   const [problem, setProblem] = useState<string>("");
@@ -53,8 +54,16 @@ export default function Home() {
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div className="text-xl font-semibold text-neutral-100">수학 퀴즈</div>
-          <div className="text-sm text-neutral-500">
-            점수: {score}/{total}
+          <div className="flex items-center gap-4">
+            <div className="text-sm text-neutral-500">
+              점수: {score}/{total}
+            </div>
+            <Link 
+              href="/penalty" 
+              className="px-4 py-2 bg-green-600 hover:bg-green-500 rounded-lg text-sm font-medium transition"
+            >
+              ⚽ 페널티킥
+            </Link>
           </div>
         </div>
 

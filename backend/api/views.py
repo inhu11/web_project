@@ -64,3 +64,23 @@ def check_answer(request):
         })
     except (ValueError, TypeError):
         return JsonResponse({'error': '잘못된 입력입니다'}, status=400)
+
+
+def penalty_kick(request):
+    choice = request.GET.get('choice', '').strip().lower()
+    
+    valid_choices = ['left', 'center', 'right']
+    
+    if choice not in valid_choices:
+        return JsonResponse({'error': '잘못된 선택입니다'}, status=400)
+    
+    # Random goalkeeper choice
+    keeper_choice = random.choice(['left', 'center', 'right'])
+    goal = choice != keeper_choice
+    
+    return JsonResponse({
+        'player_choice': choice,
+        'keeper_choice': keeper_choice,
+        'goal': goal,
+        'message': '골인! 멋진 슛이에요!' if goal else '아! 골키퍼가 막았습니다!'
+    })
