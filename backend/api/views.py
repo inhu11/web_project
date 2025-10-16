@@ -17,9 +17,16 @@ def math_quiz(request):
     b = random.randint(1, 20)
     op = random.choice(['+', '-', '*'])
     
-    # 직접 작성
-    answer = None
-    
+    if op == '+':
+        answer = a + b
+    elif op == '-':
+        answer = a - b
+    elif op == '*':
+        answer = a * b
+    else:
+        # This should never happen, but safeguard against invalid operations
+        answer = 0
+
     return JsonResponse({
         'problem': f'{a} {op} {b}',
         'answer': answer,
@@ -32,15 +39,20 @@ def check_answer(request):
     try:
         a = int(request.GET.get('a', 0))
         b = int(request.GET.get('b', 0))
-        op = request.GET.get('op', '+')
+        op = request.GET.get('op', '+').strip()
         user_answer = int(request.GET.get('answer', 0))
+        
+        if op == ' ' or op == '':
+            op = '+'
         
         if op == '+':
             correct = a + b
         elif op == '-':
             correct = a - b
-        else:
+        elif op == '*':
             correct = a * b
+        else:
+            return JsonResponse({'error': f'잘못된 연산: {op}'}, status=400)
         
         is_correct = user_answer == correct
         
@@ -50,5 +62,5 @@ def check_answer(request):
             'correct_answer': correct,
             'message': '정답입니다!' if is_correct else f'아쉽네요! 정답은 {correct}입니다'
         })
-    except:
+    except (ValueError, TypeError):
         return JsonResponse({'error': '잘못된 입력입니다'}, status=400)
