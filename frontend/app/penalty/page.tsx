@@ -95,26 +95,27 @@ export default function PenaltyKick() {
     }
   }, [phase]);
 
-  // Calculate current direction from arrow rotation
+  // Calculate current direction from arrow rotation (mirrored to match kick direction)
   const getCurrentDirection = (rotation: number): Direction => {
     // Normalize to 0-360
     const normalizedRotation = ((rotation % 360) + 360) % 360;
     
-    // Left: 210-330 degrees (pointing left-ish)
-    // Center: 330-30 degrees (pointing up)
-    // Right: 30-150 degrees (pointing right-ish)
+    // Mirror the mapping: arrow pointing left = kick right, arrow pointing right = kick left
+    // Right: 210-330 degrees (arrow pointing left-ish -> kick right)
+    // Center: 330-30 degrees (arrow pointing up -> kick center)
+    // Left: 30-150 degrees (arrow pointing right-ish -> kick left)
     
     if (normalizedRotation >= 240 && normalizedRotation < 300) {
-      return "left";
+      return "right";  // Mirrored from "left"
     } else if ((normalizedRotation >= 300 && normalizedRotation <= 360) || (normalizedRotation >= 0 && normalizedRotation < 60)) {
       return "center";
     } else if (normalizedRotation >= 60 && normalizedRotation < 120) {
-      return "right";
+      return "left";  // Mirrored from "right"
     }
     
-    // Default during transition zones
+    // Default during transition zones (also mirrored)
     if (normalizedRotation >= 120 && normalizedRotation < 240) {
-      return normalizedRotation < 180 ? "right" : "left";
+      return normalizedRotation < 180 ? "left" : "right";  // Mirrored
     }
     
     return "center";
@@ -409,7 +410,7 @@ export default function PenaltyKick() {
               {(phase === "aiming" || phase === "charging") && (
                 <div className="space-y-6">
                   {/* Direction Spinner - Simple Rotating Arrow */}
-                  {(phase === "aiming" || phase === "charging") && (
+                  {(phase === "aiming" || phase === "charging" || phase === "kicking" || phase === "result") && (
                     <div className="text-center mb-6">
                       {/* Simple Spinning Arrow */}
                       <div className="flex items-center justify-center">
