@@ -1,86 +1,73 @@
 from django.http import JsonResponse
-from django.utils import timezone
 import random
-
-
-def current_time(request):
-    now = timezone.now()
-    return JsonResponse({
-        'iso': now.isoformat(),
-        'epoch': int(now.timestamp() * 1000),
-        'tz': 'UTC',
-    })
-
-
-def math_quiz(request):
-    a = random.randint(1, 20)
-    b = random.randint(1, 20)
-    op = random.choice(['+', '-', '*'])
-    
-    if op == '+':
-        answer = a + b
-    elif op == '-':
-        answer = a - b
-    elif op == '*':
-        answer = a * b
-    else:
-        # This should never happen, but safeguard against invalid operations
-        answer = 0
-
-    return JsonResponse({
-        'problem': f'{a} {op} {b}',
-        'answer': answer,
-        'numbers': [a, b],
-        'operation': op
-    })
-
-
-def check_answer(request):
-    try:
-        a = int(request.GET.get('a', 0))
-        b = int(request.GET.get('b', 0))
-        op = request.GET.get('op', '+').strip()
-        user_answer = int(request.GET.get('answer', 0))
-        
-        if op == ' ' or op == '':
-            op = '+'
-        
-        if op == '+':
-            correct = a + b
-        elif op == '-':
-            correct = a - b
-        elif op == '*':
-            correct = a * b
-        else:
-            return JsonResponse({'error': f'잘못된 연산: {op}'}, status=400)
-        
-        is_correct = user_answer == correct
-        
-        return JsonResponse({
-            'correct': is_correct,
-            'user_answer': user_answer,
-            'correct_answer': correct,
-            'message': '정답입니다!' if is_correct else f'아쉽네요! 정답은 {correct}입니다'
-        })
-    except (ValueError, TypeError):
-        return JsonResponse({'error': '잘못된 입력입니다'}, status=400)
 
 
 def penalty_kick(request):
     choice = request.GET.get('choice', '').strip().lower()
+    power = int(request.GET.get('power', '50'))  # Power parameter (0-100)
+    too_weak = request.GET.get('tooWeak', 'false').lower() == 'true'
+    too_strong = request.GET.get('tooStrong', 'false').lower() == 'true'
     
     valid_choices = ['left', 'center', 'right']
     
     if choice not in valid_choices:
         return JsonResponse({'error': '잘못된 선택입니다'}, status=400)
     
-    # Random goalkeeper choice
-    keeper_choice = random.choice(['left', 'center', 'right'])
-    goal = choice != keeper_choice
+    # Determine ball height based on power
+    # 0-25: too weak (always blocked)
+    # 25-45: low
+    # 45-55: mid  
+    # 55-75: high
+    # 75-100: too strong (goes over)
+    
+    if power < 25:
+        ball_height = 'low'
+    elif power < 45:
+        ball_height = 'low'
+    elif power < 55:
+        ball_height = 'mid'
+    elif power <= 75:
+        ball_height = 'high'
+    else:
+        ball_height = 'over'
+    
+    # If too weak, goalkeeper ALWAYS dives to the same direction as player
+    if too_weak:
+        keeper_direction = choice
+        keeper_height = 'low'
+        keeper_choice = f"{keeper_direction}_low"
+        goal = False
+    elif too_strong:
+        # Random keeper choice but doesn't matter since ball goes over
+        keeper_direction = random.choice(['left', 'center', 'right'])
+        keeper_height = random.choice(['low', 'high'])
+        keeper_choice = f"{keeper_direction}_{keeper_height}"
+        goal = False
+    else:
+        # Normal gameplay with 6 possible keeper positions
+        keeper_direction = random.choice(['left', 'center', 'right'])
+        keeper_height = random.choice(['low', 'high'])
+        keeper_choice = f"{keeper_direction}_{keeper_height}"
+        
+        # Goal if:
+        # 1. Different direction, OR
+        # 2. Same direction but different height
+        if keeper_direction != choice:
+            goal = True
+        elif ball_height == 'mid':
+            # Mid height shots can be blocked by either high or low
+            goal = False
+        elif (ball_height == 'low' and keeper_height == 'high') or \
+             (ball_height == 'high' and keeper_height == 'low'):
+            goal = True
+        else:
+            goal = False
     
     return JsonResponse({
         'player_choice': choice,
         'keeper_choice': keeper_choice,
+        'power': power,
+        'ball_height': ball_height,
         'goal': goal,
         'message': '골인! 멋진 슛이에요!' if goal else '아! 골키퍼가 막았습니다!'
     })

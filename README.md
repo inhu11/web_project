@@ -1,115 +1,125 @@
-# Simple Web - Django + Next.js Full Stack
+# ⚽ 페널티킥 게임 - Django + Next.js
 
-A full-stack web application with Django backend and Next.js frontend, featuring a real-time clock and interactive math quiz.
+재미있는 페널티킥 슈팅 게임! Django 백엔드와 Next.js 프론트엔드를 사용한 풀스택 웹 애플리케이션입니다.
 
-## Project Structure
+## 🎮 게임 설명
+
+골키퍼를 상대로 페널티킥을 차는 게임입니다. 왼쪽, 중앙, 오른쪽 중 방향을 선택하고 골키퍼와 다른 방향을 선택하면 골을 넣을 수 있습니다!
+
+## 📁 프로젝트 구조
 
 ```
-simple_web/
-├── backend/           # Django API (Python)
-│   ├── api/          # API endpoints
-│   ├── server/       # Django settings
-│   └── requirements.txt
-├── frontend/         # Next.js app (TypeScript + React)
-│   └── app/
-│       ├── page.tsx      # Home (Clock)
-│       └── quiz/         # Math Quiz
-├── .venv/            # Python virtual environment
-└── package.json      # Root orchestrator
+web_project/
+├── backend/              # Django API (Python)
+│   ├── api/             # API 엔드포인트
+│   │   ├── views.py     # penalty_kick 로직
+│   │   └── urls.py      # API 라우팅
+│   ├── server/          # Django 설정
+│   └── requirements.txt # Python 의존성
+│
+├── frontend/            # Next.js 앱 (TypeScript + React)
+│   ├── app/
+│   │   ├── page.tsx         # 홈 (리다이렉트)
+│   │   └── penalty/         # 페널티킥 게임
+│   │       └── page.tsx
+│   ├── public/
+│   │   ├── audios/soccer/   # 게임 사운드
+│   │   └── images/soccer/   # 게임 이미지
+│   └── package.json
+│
+├── .venv/               # Python 가상환경
+└── package.json         # 루트 스크립트 실행기
 ```
 
-## Quick Start
+## 🚀 빠른 시작
 
-### First Time Setup
+### 최초 설정
 
 ```bash
 npm run setup
 cd backend && ../.venv/bin/python manage.py migrate
 ```
 
-### Run Development Servers
+### 개발 서버 실행
 
 ```bash
 npm run dev
 ```
 
-This starts both servers:
-- **Backend**: http://127.0.0.1:8000
-- **Frontend**: http://localhost:3000
+두 서버가 동시에 실행됩니다:
+- **백엔드**: http://127.0.0.1:8000
+- **프론트엔드**: http://localhost:3000
 
-### Pages
+### 게임 플레이
 
-- **Home Clock**: http://localhost:3000
-- **Math Quiz**: http://localhost:3000/quiz
+브라우저에서 http://localhost:3000 으로 접속하면 자동으로 페널티킥 게임으로 이동합니다!
 
-### API Endpoints
+## 🛠️ 기술 스택
 
-- `GET /api/time/` - Current server time
-- `GET /api/math-quiz/` - Generate random math problem
-- `GET /api/check-answer/` - Validate answer
-
-## Admin Panel
-
-Access Django admin at http://127.0.0.1:8000/admin/
-
-**Credentials:**
-- Username: `admin`
-- Password: `admin`
-
-## Tech Stack
-
-**Backend:**
+**백엔드:**
 - Django 4.2
 - Django CORS Headers
 - SQLite
+- Python 3.x
 
-**Frontend:**
+**프론트엔드:**
 - Next.js 15 (App Router)
 - React 19
 - Tailwind CSS 4
 - TypeScript
 
-## Architecture
+## 🎯 주요 기능
+
+- 🎮 인터랙티브한 페널티킥 게임플레이
+- 🎨 아름다운 UI/UX 디자인
+- 🔊 실감나는 사운드 이펙트
+- ⚽ 공 애니메이션 및 골키퍼 다이빙 동작
+- 📊 점수 추적 시스템
+- 🎯 5번의 슈팅 기회
+
+## 📡 API 엔드포인트
+
+- `GET /api/penalty-kick/?choice={left|center|right}` - 페널티킥 실행 및 결과 반환
+
+## 🏗️ 아키텍처
 
 ```
 ┌─────────────────────────────────────┐
 │  Frontend (Next.js)                 │
 │  http://localhost:3000              │
-│  - UI/UX                            │
-│  - User interactions                │
+│  - 게임 UI/UX                       │
+│  - 사용자 인터랙션                  │
+│  - 애니메이션 & 사운드              │
 └─────────────────────────────────────┘
            ↓ HTTP Fetch
            ↓
 ┌─────────────────────────────────────┐
 │  Backend (Django)                   │
 │  http://127.0.0.1:8000              │
-│  - Business logic                   │
-│  - Data validation                  │
-│  - API responses                    │
+│  - 게임 로직                        │
+│  - 랜덤 골키퍼 선택                 │
+│  - 승패 판정                        │
 └─────────────────────────────────────┘
 ```
 
-## Development
+## 💻 개발
 
-### Backend Only
+### 백엔드만 실행
 ```bash
 cd backend
 ../.venv/bin/python manage.py runserver
 ```
 
-### Frontend Only
+### 프론트엔드만 실행
 ```bash
 cd frontend
 npm run dev
 ```
 
-### Create New Page
-1. Add backend view in `backend/api/views.py`
-2. Add URL route in `backend/api/urls.py`
-3. Create page in `frontend/app/[name]/page.tsx`
+## 📝 라이선스
 
-## Notes
+MIT
 
-Perfect for teaching kids how frontend and backend work together!
+---
 
-
+즐거운 게임 되세요! ⚽🎉
